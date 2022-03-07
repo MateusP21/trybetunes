@@ -93,12 +93,12 @@ export default class Search extends React.Component {
                                       className="album"
                                     >
                                       <img src={ artworkUrl100 } alt={ artistName } />
-                                      <h3>
 
-                                        <Link
-                                          to={ `/album/${collectionId}` }
-                                          data-testid={ `link-to-album-${collectionId}` }
-                                        />
+                                      <Link
+                                        to={ `/album/${collectionId}` }
+                                        data-testid={ `link-to-album-${collectionId}` }
+                                      />
+                                      <h3>
                                         {collectionName}
                                       </h3>
                                       <p>{artistName}</p>
