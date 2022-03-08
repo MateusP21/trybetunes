@@ -3,21 +3,34 @@ import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import MusicCard from '../components/MusicCard';
 import getMusics from '../services/musicsAPI';
+import { getFavoriteSongs } from '../services/favoriteSongsAPI';
+import Loading from '../components/Loading';
 
 export default class Album extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-
+      loading: false,
       artistInfo: {},
       musicsData: [],
+      favorites: [],
     };
   }
 
   componentDidMount() {
     this.handleGetMusics();
+    this.getFavorites();
   }
+
+    getFavorites = async () => {
+      this.setState({
+        loading: true,
+        favorites: await getFavoriteSongs(),
+      }, () => this.setState({
+        loading: false,
+      }));
+    }
 
 handleGetMusics = async () => {
   const { match: { params } } = this.props;
@@ -30,31 +43,50 @@ handleGetMusics = async () => {
 }
 
 render() {
-  const { musicsData, artistInfo } = this.state;
+  const { musicsData, artistInfo, loading, favorites } = this.state;
   return (
     <>
       <Header />
-      <div data-testid="page-album">
+      {loading
+        ? <Loading />
+        : (
+          <div data-testid="page-album">
 
-        <div className="artist">
-          <img src={ artistInfo.artworkUrl100 } alt="" />
-          <h1 data-testid="artist-name">{artistInfo.artistName}</h1>
-          <p data-testid="album-name">{artistInfo.collectionName}</p>
-        </div>
+            <div className="artist">
+              <img src={ artistInfo.artworkUrl100 } alt="" />
+              <h1 data-testid="artist-name">{artistInfo.artistName}</h1>
+              <p data-testid="album-name">{artistInfo.collectionName}</p>
+            </div>
 
-        <div className="musics">
-          {
-            musicsData.map((music, index) => index !== 0
-                && <MusicCard
-                  handleLoading={ this.handleLoading }
-                  key={ music.trackId }
-                  music={ music }
-                />)
-          }
+            <div className="musics">
+              {
+                musicsData.map((music, index) => {
+                  let item;
+                  if (index !== 0) {
+                    item = favorites.some(
+                      (favorite) => favorite.trackId === music.trackId,
+                    )
+                      ? (
+                        <MusicCard
+                          key={ music.trackId }
+                          music={ music }
+                          isFavoriteSong
+                        />)
+                      : (
+                        <MusicCard
+                          key={ music.trackId }
+                          music={ music }
+                          isFavoriteSong={ false }
+                        />);
+                  }
 
-        </div>
+                  return item;
+                })
+              }
 
-      </div>
+            </div>
+
+          </div>)}
     </>
   );
 }

@@ -12,6 +12,13 @@ export default class MusicCard extends React.Component {
     };
   }
 
+  componentDidMount() {
+    const { isFavoriteSong } = this.props;
+    this.setState({
+      isChecked: isFavoriteSong,
+    });
+  }
+
     handleChange = async (event) => {
       const { music } = this.props;
       this.setState({
@@ -57,6 +64,7 @@ export default class MusicCard extends React.Component {
 }
 
 MusicCard.propTypes = {
+  isFavoriteSong: PropTypes.bool.isRequired,
   music: PropTypes.shape({
     trackName: PropTypes.string,
     trackId: PropTypes.number,
