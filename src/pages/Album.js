@@ -9,6 +9,7 @@ export default class Album extends React.Component {
     super(props);
 
     this.state = {
+
       artistInfo: {},
       musicsData: [],
     };
@@ -35,21 +36,19 @@ render() {
       <Header />
       <div data-testid="page-album">
 
-        (
         <div className="artist">
           <img src={ artistInfo.artworkUrl100 } alt="" />
           <h1 data-testid="artist-name">{artistInfo.artistName}</h1>
           <p data-testid="album-name">{artistInfo.collectionName}</p>
         </div>
-        )
 
         <div className="musics">
           {
-            musicsData.map(({ trackId, trackName, previewUrl }, index) => index !== 0
+            musicsData.map((music, index) => index !== 0
                 && <MusicCard
-                  key={ trackId }
-                  trackName={ trackName }
-                  previewUrl={ previewUrl }
+                  handleLoading={ this.handleLoading }
+                  key={ music.trackId }
+                  music={ music }
                 />)
           }
 
